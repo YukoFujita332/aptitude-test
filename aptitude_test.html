@@ -1,0 +1,1666 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>基礎能力診断（言語・非言語）</title>
+<style>
+  :root {
+    --bg: #F7F8FA;
+    --surface: #FFFFFF;
+    --surface2: #F0F2F6;
+    --border: #DDE1E9;
+    --text: #1A1D23;
+    --text-muted: #6B7280;
+    --accent: #2563EB;
+    --accent-hover: #1D4ED8;
+    --accent-light: #EFF6FF;
+    --success: #059669;
+    --warning: #D97706;
+    --danger: #DC2626;
+    --danger-hover: #B91C1C;
+    --radius: 10px;
+    --shadow: 0 2px 8px rgba(0,0,0,0.08);
+    --shadow-lg: 0 4px 20px rgba(0,0,0,0.12);
+    --font: 'Helvetica Neue', Arial, 'Hiragino Sans', 'Yu Gothic', sans-serif;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: var(--font);
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  /* ─── HIDDEN PAGE SYSTEM ─── */
+  .page { display: none; }
+  .page.active { display: block; }
+
+  /* ─── HEADER ─── */
+  .header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: var(--shadow);
+  }
+  .header-logo {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: -0.3px;
+  }
+  .header-badge {
+    font-size: 11px;
+    background: var(--accent-light);
+    color: var(--accent);
+    border: 1px solid #BFDBFE;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-weight: 600;
+  }
+
+  /* ─── CONTAINER ─── */
+  .container {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 32px 16px 60px;
+  }
+  .container-wide {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 28px 16px 60px;
+  }
+
+  /* ─── CARDS ─── */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    margin-bottom: 20px;
+    box-shadow: var(--shadow);
+  }
+  .card-title {
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* ─── SECTION LABEL ─── */
+  .section-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--accent);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 4px 14px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+    letter-spacing: 0.5px;
+  }
+  .section-label.verbal { background: #7C3AED; }
+  .section-label.numerical { background: #0891B2; }
+
+  /* ─── FORM ELEMENTS ─── */
+  .form-group {
+    margin-bottom: 18px;
+  }
+  label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+  input[type="text"],
+  input[type="number"],
+  select {
+    width: 100%;
+    padding: 10px 13px;
+    border: 1.5px solid var(--border);
+    border-radius: 7px;
+    font-size: 14px;
+    font-family: var(--font);
+    background: var(--surface);
+    color: var(--text);
+    transition: border-color 0.15s, box-shadow 0.15s;
+    appearance: none;
+    -webkit-appearance: none;
+  }
+  input[type="text"]:focus,
+  input[type="number"]:focus,
+  select:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(37,99,235,0.12);
+  }
+  select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236B7280' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    padding-right: 36px;
+  }
+
+  /* ─── RADIO GROUP ─── */
+  .radio-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 6px;
+  }
+  .radio-option {
+    position: relative;
+  }
+  .radio-option input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+  .radio-option label {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+    padding: 8px 16px;
+    border: 1.5px solid var(--border);
+    border-radius: 7px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-muted);
+    background: var(--surface);
+    transition: all 0.15s;
+    margin: 0;
+  }
+  .radio-option input[type="radio"]:checked + label {
+    border-color: var(--accent);
+    background: var(--accent-light);
+    color: var(--accent);
+  }
+  .radio-option label:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  /* ─── QUESTION BLOCK ─── */
+  .question-block {
+    margin-bottom: 28px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--border);
+  }
+  .question-block:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+  }
+  .q-number {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 4px;
+    letter-spacing: 0.3px;
+  }
+  .q-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 12px;
+  }
+  .sub-questions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .sub-question {
+    display: grid;
+    grid-template-columns: 60px 1fr;
+    align-items: center;
+    gap: 10px;
+  }
+  .sub-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-muted);
+  }
+
+  /* ─── SORT QUESTION ─── */
+  .sort-slots {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+  }
+  .sort-slot {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .sort-slot-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-muted);
+    min-width: 16px;
+  }
+  .sort-slot select {
+    width: 80px;
+  }
+
+  /* ─── BUTTONS ─── */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    padding: 11px 22px;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 700;
+    font-family: var(--font);
+    cursor: pointer;
+    transition: all 0.15s;
+    letter-spacing: 0.2px;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: #fff;
+    width: 100%;
+    padding: 14px;
+    font-size: 15px;
+  }
+  .btn-primary:hover { background: var(--accent-hover); transform: translateY(-1px); box-shadow: var(--shadow); }
+  .btn-secondary {
+    background: var(--surface);
+    color: var(--text);
+    border: 1.5px solid var(--border);
+  }
+  .btn-secondary:hover { background: var(--surface2); }
+  .btn-danger {
+    background: var(--danger);
+    color: #fff;
+  }
+  .btn-danger:hover { background: var(--danger-hover); }
+  .btn-success {
+    background: var(--success);
+    color: #fff;
+  }
+  .btn-sm {
+    padding: 6px 14px;
+    font-size: 12px;
+    border-radius: 6px;
+  }
+
+  /* ─── NOTICE ─── */
+  .notice {
+    background: var(--accent-light);
+    border: 1px solid #BFDBFE;
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-size: 13px;
+    color: #1E40AF;
+    margin-bottom: 20px;
+  }
+  .notice.warning {
+    background: #FFFBEB;
+    border-color: #FCD34D;
+    color: #92400E;
+  }
+  .notice.danger {
+    background: #FEF2F2;
+    border-color: #FCA5A5;
+    color: #991B1B;
+  }
+
+  /* ─── SUCCESS SCREEN ─── */
+  .success-screen {
+    text-align: center;
+    padding: 48px 24px;
+  }
+  .success-icon {
+    width: 72px;
+    height: 72px;
+    background: #DCFCE7;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 24px;
+    font-size: 32px;
+  }
+  .success-title {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 12px;
+  }
+  .success-msg {
+    font-size: 15px;
+    color: var(--text-muted);
+    line-height: 1.7;
+  }
+
+  /* ─── LOGIN ─── */
+  .login-wrapper {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg);
+    padding: 24px;
+  }
+  .login-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 40px;
+    width: 100%;
+    max-width: 400px;
+    box-shadow: var(--shadow-lg);
+  }
+  .login-logo {
+    text-align: center;
+    margin-bottom: 8px;
+  }
+  .login-logo-text {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--accent);
+    letter-spacing: -0.5px;
+  }
+  .login-subtitle {
+    text-align: center;
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 32px;
+  }
+
+  /* ─── ADMIN TABLE ─── */
+  .table-wrapper {
+    overflow-x: auto;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--surface);
+    font-size: 13px;
+  }
+  thead {
+    background: #F8FAFC;
+    border-bottom: 2px solid var(--border);
+  }
+  th {
+    padding: 12px 14px;
+    text-align: left;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: var(--text-muted);
+    white-space: nowrap;
+  }
+  td {
+    padding: 13px 14px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: middle;
+  }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: #F8FAFC; }
+
+  /* ─── SCORE CHIPS ─── */
+  .score-big {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--accent);
+    line-height: 1;
+  }
+  .score-label {
+    font-size: 10px;
+    color: var(--text-muted);
+    font-weight: 600;
+    margin-top: 2px;
+  }
+
+  .stage-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 800;
+  }
+  .stage-5 { background: #DCFCE7; color: #166534; }
+  .stage-4 { background: #DBEAFE; color: #1E40AF; }
+  .stage-3 { background: #FEF9C3; color: #713F12; }
+  .stage-2 { background: #FED7AA; color: #9A3412; }
+  .stage-1 { background: #FEE2E2; color: #991B1B; }
+
+  /* ─── RESULT CARDS (admin detail) ─── */
+  .result-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    margin-bottom: 20px;
+  }
+  @media (max-width: 600px) {
+    .result-cards { grid-template-columns: 1fr; }
+    .sub-question { grid-template-columns: 50px 1fr; }
+  }
+  .result-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px;
+    text-align: center;
+    box-shadow: var(--shadow);
+  }
+  .result-card-title {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+  }
+  .result-card-score {
+    font-size: 40px;
+    font-weight: 800;
+    color: var(--accent);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .result-card.verbal .result-card-score { color: #7C3AED; }
+  .result-card.numerical .result-card-score { color: #0891B2; }
+
+  /* ─── ADMIN NAV ─── */
+  .admin-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  .admin-bar-title {
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--text);
+  }
+  .admin-bar-actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  /* ─── MODAL ─── */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: var(--surface);
+    border-radius: 14px;
+    padding: 28px;
+    max-width: 680px;
+    width: 100%;
+    max-height: 85vh;
+    overflow-y: auto;
+    box-shadow: var(--shadow-lg);
+  }
+  .modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .modal-title {
+    font-size: 17px;
+    font-weight: 800;
+  }
+  .modal-close {
+    width: 32px;
+    height: 32px;
+    border: 1.5px solid var(--border);
+    border-radius: 6px;
+    background: var(--surface);
+    cursor: pointer;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-muted);
+  }
+  .modal-close:hover { background: var(--surface2); }
+
+  /* ─── DETAIL TABLE ─── */
+  .detail-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 9px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+  }
+  .detail-row:last-child { border-bottom: none; }
+  .detail-key { color: var(--text-muted); font-weight: 500; }
+  .detail-val { font-weight: 700; color: var(--text); }
+
+  /* ─── FOOTER NOTE ─── */
+  .footnote {
+    font-size: 12px;
+    color: var(--text-muted);
+    line-height: 1.7;
+    padding: 16px;
+    background: var(--surface2);
+    border-radius: 8px;
+    margin-top: 24px;
+    border: 1px solid var(--border);
+  }
+
+  /* ─── EMPTY STATE ─── */
+  .empty-state {
+    text-align: center;
+    padding: 60px 24px;
+    color: var(--text-muted);
+  }
+  .empty-state-icon { font-size: 40px; margin-bottom: 16px; }
+  .empty-state-text { font-size: 15px; }
+
+  /* ─── PROGRESS ─── */
+  .progress-bar-wrap {
+    background: var(--border);
+    border-radius: 4px;
+    height: 4px;
+    margin-bottom: 20px;
+    overflow: hidden;
+  }
+  .progress-bar-fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 4px;
+    transition: width 0.3s;
+  }
+
+  .error-msg {
+    color: var(--danger);
+    font-size: 12px;
+    margin-top: 4px;
+    display: none;
+  }
+  .error-msg.visible { display: block; }
+
+  .text-right { text-align: right; }
+  .text-muted { color: var(--text-muted); }
+  .mt-12 { margin-top: 12px; }
+  .mt-20 { margin-top: 20px; }
+  .flex-gap { display: flex; gap: 10px; flex-wrap: wrap; }
+
+  /* ─── MOBILE TWEAKS ─── */
+  @media (max-width: 480px) {
+    .header { padding: 14px 16px; }
+    .card { padding: 18px; }
+    .sort-slots { gap: 6px; }
+    .radio-option label { min-width: 38px; padding: 7px 12px; }
+    .result-card-score { font-size: 32px; }
+    .login-card { padding: 28px 20px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════
+     PAGE: CANDIDATE
+════════════════════════════════════════════════ -->
+<div id="page-candidate" class="page active">
+  <div class="header">
+    <span class="header-logo">基礎能力診断</span>
+    <span class="header-badge">受検者</span>
+  </div>
+
+  <div class="container">
+    <!-- Progress bar -->
+    <div class="progress-bar-wrap">
+      <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
+    </div>
+
+    <!-- Submission success (hidden initially) -->
+    <div id="candidate-success" style="display:none">
+      <div class="success-screen">
+        <div class="success-icon">✓</div>
+        <div class="success-title">送信完了</div>
+        <div class="success-msg">回答を受け付けました。<br>選考結果は担当者よりご連絡します。</div>
+      </div>
+    </div>
+
+    <!-- Form (visible initially) -->
+    <div id="candidate-form">
+      <div class="notice">すべての設問に回答し、送信してください。</div>
+
+      <!-- Applicant Info -->
+      <div class="card">
+        <div class="card-title">受検者情報</div>
+        <div class="form-group">
+          <label for="name">お名前 <span style="color:var(--danger)">*</span></label>
+          <input type="text" id="name" placeholder="例：山田 太郎">
+          <div class="error-msg" id="err-name">お名前を入力してください。</div>
+        </div>
+        <div class="form-group">
+          <label for="applicant-id">応募者ID またはメールアドレス <span style="color:var(--danger)">*</span></label>
+          <input type="text" id="applicant-id" placeholder="例：yamada001 または yamada@example.com">
+          <div class="error-msg" id="err-id">応募者IDまたはメールアドレスを入力してください。</div>
+        </div>
+      </div>
+
+      <!-- ── 言語問題 ── -->
+      <div class="section-label verbal">言語能力　問題 1〜17</div>
+
+      <div class="card">
+        <!-- Q1 -->
+        <div class="question-block">
+          <div class="q-number">問題 1</div>
+          <div class="q-title">次の文の（　）に入る最も適切な語句を選んでください。</div>
+          <div class="radio-group" id="q1">
+            <div class="radio-option"><input type="radio" name="q1" value="A" id="q1A"><label for="q1A">A</label></div>
+            <div class="radio-option"><input type="radio" name="q1" value="B" id="q1B"><label for="q1B">B</label></div>
+            <div class="radio-option"><input type="radio" name="q1" value="C" id="q1C"><label for="q1C">C</label></div>
+            <div class="radio-option"><input type="radio" name="q1" value="D" id="q1D"><label for="q1D">D</label></div>
+            <div class="radio-option"><input type="radio" name="q1" value="E" id="q1E"><label for="q1E">E</label></div>
+          </div>
+          <div class="error-msg" id="err-q1">回答を選択してください。</div>
+        </div>
+
+        <!-- Q2 -->
+        <div class="question-block">
+          <div class="q-number">問題 2</div>
+          <div class="q-title">各文の（　）に入る最も適切な語句を選んでください。</div>
+          <div class="sub-questions">
+            <div class="sub-question">
+              <span class="sub-label">2-1</span>
+              <select id="q2-1"><option value="">選択</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option></select>
+            </div>
+            <div class="sub-question">
+              <span class="sub-label">2-2</span>
+              <select id="q2-2"><option value="">選択</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option></select>
+            </div>
+            <div class="sub-question">
+              <span class="sub-label">2-3</span>
+              <select id="q2-3"><option value="">選択</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option></select>
+            </div>
+            <div class="sub-question">
+              <span class="sub-label">2-4</span>
+              <select id="q2-4"><option value="">選択</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option></select>
+            </div>
+            <div class="sub-question">
+              <span class="sub-label">2-5</span>
+              <select id="q2-5"><option value="">選択</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option></select>
+            </div>
+          </div>
+          <div class="error-msg" id="err-q2">すべての小問に回答してください。</div>
+        </div>
+
+        <!-- Q3 -->
+        <div class="question-block">
+          <div class="q-number">問題 3</div>
+          <div class="q-title">各文の（　）に入る最も適切な語句を選んでください。</div>
+          <div class="sub-questions">
+            <div class="sub-question"><span class="sub-label">3-1</span><select id="q3-1"><option value="">選択</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option></select></div>
+            <div class="sub-question"><span class="sub-label">3-2</span><select id="q3-2"><option value="">選択</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option></select></div>
+            <div class="sub-question"><span class="sub-label">3-3</span><select id="q3-3"><option value="">選択</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option></select></div>
+            <div class="sub-question"><span class="sub-label">3-4</span><select id="q3-4"><option value="">選択</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option></select></div>
+            <div class="sub-question"><span class="sub-label">3-5</span><select id="q3-5"><option value="">選択</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option></select></div>
+          </div>
+          <div class="error-msg" id="err-q3">すべての小問に回答してください。</div>
+        </div>
+
+        <!-- Q4 -->
+        <div class="question-block">
+          <div class="q-number">問題 4</div>
+          <div class="q-title">各文の（　）に入る最も適切な語句を選んでください。</div>
+          <div class="sub-questions">
+            <div class="sub-question"><span class="sub-label">4-1</span><select id="q4-1"><option value="">選択</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option></select></div>
+            <div class="sub-question"><span class="sub-label">4-2</span><select id="q4-2"><option value="">選択</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option></select></div>
+            <div class="sub-question"><span class="sub-label">4-3</span><select id="q4-3"><option value="">選択</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option></select></div>
+            <div class="sub-question"><span class="sub-label">4-4</span><select id="q4-4"><option value="">選択</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option></select></div>
+            <div class="sub-question"><span class="sub-label">4-5</span><select id="q4-5"><option value="">選択</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option></select></div>
+          </div>
+          <div class="error-msg" id="err-q4">すべての小問に回答してください。</div>
+        </div>
+
+        <!-- Q5 -->
+        <div class="question-block">
+          <div class="q-number">問題 5</div>
+          <div class="q-title">各文の（　）に入る最も適切な語句を選んでください。</div>
+          <div class="sub-questions">
+            <div class="sub-question"><span class="sub-label">5-1</span><select id="q5-1"><option value="">選択</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option></select></div>
+            <div class="sub-question"><span class="sub-label">5-2</span><select id="q5-2"><option value="">選択</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option></select></div>
+            <div class="sub-question"><span class="sub-label">5-3</span><select id="q5-3"><option value="">選択</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option></select></div>
+          </div>
+          <div class="error-msg" id="err-q5">すべての小問に回答してください。</div>
+        </div>
+
+        <!-- Q6 -->
+        <div class="question-block">
+          <div class="q-number">問題 6</div>
+          <div class="q-title">各文の（　）に入る最も適切な語句を選んでください。</div>
+          <div class="sub-questions">
+            <div class="sub-question"><span class="sub-label">6-1</span><select id="q6-1"><option value="">選択</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option></select></div>
+            <div class="sub-question"><span class="sub-label">6-2</span><select id="q6-2"><option value="">選択</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option></select></div>
+            <div class="sub-question"><span class="sub-label">6-3</span><select id="q6-3"><option value="">選択</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option></select></div>
+          </div>
+          <div class="error-msg" id="err-q6">すべての小問に回答してください。</div>
+        </div>
+
+        <!-- Q7 -->
+        <div class="question-block">
+          <div class="q-number">問題 7</div>
+          <div class="q-title">各文の（　）に入る最も適切な語句を選んでください。</div>
+          <div class="sub-questions">
+            <div class="sub-question"><span class="sub-label">7-1</span><select id="q7-1"><option value="">選択</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option></select></div>
+            <div class="sub-question"><span class="sub-label">7-2</span><select id="q7-2"><option value="">選択</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option></select></div>
+            <div class="sub-question"><span class="sub-label">7-3</span><select id="q7-3"><option value="">選択</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option></select></div>
+          </div>
+          <div class="error-msg" id="err-q7">すべての小問に回答してください。</div>
+        </div>
+
+        <!-- Q8 -->
+        <div class="question-block">
+          <div class="q-number">問題 8</div>
+          <div class="q-title">文章を正しい順に並べ替えてください。（ア〜エを選択）</div>
+          <div class="sort-slots">
+            <div class="sort-slot"><span class="sort-slot-label">ア</span><select id="q8-a"><option value="">選択</option><option>A</option><option>B</option><option>C</option><option>D</option></select></div>
+            <div class="sort-slot"><span class="sort-slot-label">イ</span><select id="q8-b"><option value="">選択</option><option>A</option><option>B</option><option>C</option><option>D</option></select></div>
+            <div class="sort-slot"><span class="sort-slot-label">ウ</span><select id="q8-c"><option value="">選択</option><option>A</option><option>B</option><option>C</option><option>D</option></select></div>
+            <div class="sort-slot"><span class="sort-slot-label">エ</span><select id="q8-d"><option value="">選択</option><option>A</option><option>B</option><option>C</option><option>D</option></select></div>
+          </div>
+          <div class="error-msg" id="err-q8">すべての欄を選択してください。</div>
+        </div>
+
+        <!-- Q9 -->
+        <div class="question-block">
+          <div class="q-number">問題 9</div>
+          <div class="q-title">文章を正しい順に並べ替えてください。（ア〜エを選択）</div>
+          <div class="sort-slots">
+            <div class="sort-slot"><span class="sort-slot-label">ア</span><select id="q9-a"><option value="">選択</option><option>A</option><option>B</option><option>C</option><option>D</option></select></div>
+            <div class="sort-slot"><span class="sort-slot-label">イ</span><select id="q9-b"><option value="">選択</option><option>A</option><option>B</option><option>C</option><option>D</option></select></div>
+            <div class="sort-slot"><span class="sort-slot-label">ウ</span><select id="q9-c"><option value="">選択</option><option>A</option><option>B</option><option>C</option><option>D</option></select></div>
+            <div class="sort-slot"><span class="sort-slot-label">エ</span><select id="q9-d"><option value="">選択</option><option>A</option><option>B</option><option>C</option><option>D</option></select></div>
+          </div>
+          <div class="error-msg" id="err-q9">すべての欄を選択してください。</div>
+        </div>
+
+        <!-- Q10 -->
+        <div class="question-block">
+          <div class="q-number">問題 10</div>
+          <div class="q-title">文章を正しい順に並べ替えてください。（ア〜エを選択）</div>
+          <div class="sort-slots">
+            <div class="sort-slot"><span class="sort-slot-label">ア</span><select id="q10-a"><option value="">選択</option><option>A</option><option>B</option><option>C</option><option>D</option></select></div>
+            <div class="sort-slot"><span class="sort-slot-label">イ</span><select id="q10-b"><option value="">選択</option><option>A</option><option>B</option><option>C</option><option>D</option></select></div>
+            <div class="sort-slot"><span class="sort-slot-label">ウ</span><select id="q10-c"><option value="">選択</option><option>A</option><option>B</option><option>C</option><option>D</option></select></div>
+            <div class="sort-slot"><span class="sort-slot-label">エ</span><select id="q10-d"><option value="">選択</option><option>A</option><option>B</option><option>C</option><option>D</option></select></div>
+          </div>
+          <div class="error-msg" id="err-q10">すべての欄を選択してください。</div>
+        </div>
+
+        <!-- Q11 -->
+        <div class="question-block">
+          <div class="q-number">問題 11</div>
+          <div class="q-title">文章を正しい順に並べ替えてください。（ア〜エを選択）</div>
+          <div class="sort-slots">
+            <div class="sort-slot"><span class="sort-slot-label">ア</span><select id="q11-a"><option value="">選択</option><option>A</option><option>B</option><option>C</option><option>D</option></select></div>
+            <div class="sort-slot"><span class="sort-slot-label">イ</span><select id="q11-b"><option value="">選択</option><option>A</option><option>B</option><option>C</option><option>D</option></select></div>
+            <div class="sort-slot"><span class="sort-slot-label">ウ</span><select id="q11-c"><option value="">選択</option><option>A</option><option>B</option><option>C</option><option>D</option></select></div>
+            <div class="sort-slot"><span class="sort-slot-label">エ</span><select id="q11-d"><option value="">選択</option><option>A</option><option>B</option><option>C</option><option>D</option></select></div>
+          </div>
+          <div class="error-msg" id="err-q11">すべての欄を選択してください。</div>
+        </div>
+
+        <!-- Q12 (3 slots) -->
+        <div class="question-block">
+          <div class="q-number">問題 12</div>
+          <div class="q-title">文章を正しい順に並べ替えてください。（ア〜ウを選択）</div>
+          <div class="sort-slots">
+            <div class="sort-slot"><span class="sort-slot-label">ア</span><select id="q12-a"><option value="">選択</option><option>A</option><option>B</option><option>C</option></select></div>
+            <div class="sort-slot"><span class="sort-slot-label">イ</span><select id="q12-b"><option value="">選択</option><option>A</option><option>B</option><option>C</option></select></div>
+            <div class="sort-slot"><span class="sort-slot-label">ウ</span><select id="q12-c"><option value="">選択</option><option>A</option><option>B</option><option>C</option></select></div>
+          </div>
+          <div class="error-msg" id="err-q12">すべての欄を選択してください。</div>
+        </div>
+
+        <!-- Q13 (3 slots) -->
+        <div class="question-block">
+          <div class="q-number">問題 13</div>
+          <div class="q-title">文章を正しい順に並べ替えてください。（ア〜ウを選択）</div>
+          <div class="sort-slots">
+            <div class="sort-slot"><span class="sort-slot-label">ア</span><select id="q13-a"><option value="">選択</option><option>A</option><option>B</option><option>C</option></select></div>
+            <div class="sort-slot"><span class="sort-slot-label">イ</span><select id="q13-b"><option value="">選択</option><option>A</option><option>B</option><option>C</option></select></div>
+            <div class="sort-slot"><span class="sort-slot-label">ウ</span><select id="q13-c"><option value="">選択</option><option>A</option><option>B</option><option>C</option></select></div>
+          </div>
+          <div class="error-msg" id="err-q13">すべての欄を選択してください。</div>
+        </div>
+
+        <!-- Q14 (3 slots) -->
+        <div class="question-block">
+          <div class="q-number">問題 14</div>
+          <div class="q-title">文章を正しい順に並べ替えてください。（ア〜ウを選択）</div>
+          <div class="sort-slots">
+            <div class="sort-slot"><span class="sort-slot-label">ア</span><select id="q14-a"><option value="">選択</option><option>A</option><option>B</option><option>C</option></select></div>
+            <div class="sort-slot"><span class="sort-slot-label">イ</span><select id="q14-b"><option value="">選択</option><option>A</option><option>B</option><option>C</option></select></div>
+            <div class="sort-slot"><span class="sort-slot-label">ウ</span><select id="q14-c"><option value="">選択</option><option>A</option><option>B</option><option>C</option></select></div>
+          </div>
+          <div class="error-msg" id="err-q14">すべての欄を選択してください。</div>
+        </div>
+
+        <!-- Q15 -->
+        <div class="question-block">
+          <div class="q-number">問題 15</div>
+          <div class="q-title">次の選択肢から正しいものを選んでください。</div>
+          <div class="radio-group" id="q15">
+            <div class="radio-option"><input type="radio" name="q15" value="A" id="q15A"><label for="q15A">A</label></div>
+            <div class="radio-option"><input type="radio" name="q15" value="B" id="q15B"><label for="q15B">B</label></div>
+            <div class="radio-option"><input type="radio" name="q15" value="C" id="q15C"><label for="q15C">C</label></div>
+            <div class="radio-option"><input type="radio" name="q15" value="D" id="q15D"><label for="q15D">D</label></div>
+            <div class="radio-option"><input type="radio" name="q15" value="E" id="q15E"><label for="q15E">E</label></div>
+          </div>
+          <div class="error-msg" id="err-q15">回答を選択してください。</div>
+        </div>
+
+        <!-- Q16 -->
+        <div class="question-block">
+          <div class="q-number">問題 16</div>
+          <div class="q-title">次の選択肢から正しいものを選んでください。</div>
+          <div class="radio-group" id="q16">
+            <div class="radio-option"><input type="radio" name="q16" value="A" id="q16A"><label for="q16A">A</label></div>
+            <div class="radio-option"><input type="radio" name="q16" value="B" id="q16B"><label for="q16B">B</label></div>
+            <div class="radio-option"><input type="radio" name="q16" value="C" id="q16C"><label for="q16C">C</label></div>
+            <div class="radio-option"><input type="radio" name="q16" value="D" id="q16D"><label for="q16D">D</label></div>
+            <div class="radio-option"><input type="radio" name="q16" value="E" id="q16E"><label for="q16E">E</label></div>
+          </div>
+          <div class="error-msg" id="err-q16">回答を選択してください。</div>
+        </div>
+
+        <!-- Q17 -->
+        <div class="question-block">
+          <div class="q-number">問題 17</div>
+          <div class="q-title">次の選択肢から正しいものを選んでください。</div>
+          <div class="radio-group" id="q17">
+            <div class="radio-option"><input type="radio" name="q17" value="A" id="q17A"><label for="q17A">A</label></div>
+            <div class="radio-option"><input type="radio" name="q17" value="B" id="q17B"><label for="q17B">B</label></div>
+            <div class="radio-option"><input type="radio" name="q17" value="C" id="q17C"><label for="q17C">C</label></div>
+            <div class="radio-option"><input type="radio" name="q17" value="D" id="q17D"><label for="q17D">D</label></div>
+            <div class="radio-option"><input type="radio" name="q17" value="E" id="q17E"><label for="q17E">E</label></div>
+          </div>
+          <div class="error-msg" id="err-q17">回答を選択してください。</div>
+        </div>
+      </div>
+
+      <!-- ── 非言語問題 ── -->
+      <div class="section-label numerical">非言語能力　問題 18〜30</div>
+
+      <div class="card">
+        <!-- Q18-19: numeric -->
+        <div class="question-block">
+          <div class="q-number">問題 18</div>
+          <div class="q-title">計算結果を数値で入力してください。</div>
+          <input type="text" id="q18" placeholder="例：1.8">
+          <div class="error-msg" id="err-q18">回答を入力してください。</div>
+        </div>
+        <div class="question-block">
+          <div class="q-number">問題 19</div>
+          <div class="q-title">計算結果を数値で入力してください。</div>
+          <input type="text" id="q19" placeholder="例：1.5">
+          <div class="error-msg" id="err-q19">回答を入力してください。</div>
+        </div>
+        <div class="question-block">
+          <div class="q-number">問題 20</div>
+          <div class="q-title">計算結果を整数で入力してください。</div>
+          <input type="text" id="q20" placeholder="例：118">
+          <div class="error-msg" id="err-q20">回答を入力してください。</div>
+        </div>
+        <div class="question-block">
+          <div class="q-number">問題 21</div>
+          <div class="q-title">計算結果を整数で入力してください。</div>
+          <input type="text" id="q21" placeholder="例：4">
+          <div class="error-msg" id="err-q21">回答を入力してください。</div>
+        </div>
+        <div class="question-block">
+          <div class="q-number">問題 22</div>
+          <div class="q-title">計算結果を整数で入力してください。</div>
+          <input type="text" id="q22" placeholder="例：4">
+          <div class="error-msg" id="err-q22">回答を入力してください。</div>
+        </div>
+        <div class="question-block">
+          <div class="q-number">問題 23</div>
+          <div class="q-title">計算結果を整数で入力してください。</div>
+          <input type="text" id="q23" placeholder="例：15">
+          <div class="error-msg" id="err-q23">回答を入力してください。</div>
+        </div>
+        <div class="question-block">
+          <div class="q-number">問題 24</div>
+          <div class="q-title">計算結果を数値で入力してください。</div>
+          <input type="text" id="q24" placeholder="例：5.36">
+          <div class="error-msg" id="err-q24">回答を入力してください。</div>
+        </div>
+        <div class="question-block">
+          <div class="q-number">問題 25</div>
+          <div class="q-title">計算結果を整数で入力してください。</div>
+          <input type="text" id="q25" placeholder="例：3820">
+          <div class="error-msg" id="err-q25">回答を入力してください。</div>
+        </div>
+
+        <!-- Q26–28: radio A-E -->
+        <div class="question-block">
+          <div class="q-number">問題 26</div>
+          <div class="q-title">次の選択肢から正しいものを選んでください。</div>
+          <div class="radio-group">
+            <div class="radio-option"><input type="radio" name="q26" value="A" id="q26A"><label for="q26A">A</label></div>
+            <div class="radio-option"><input type="radio" name="q26" value="B" id="q26B"><label for="q26B">B</label></div>
+            <div class="radio-option"><input type="radio" name="q26" value="C" id="q26C"><label for="q26C">C</label></div>
+            <div class="radio-option"><input type="radio" name="q26" value="D" id="q26D"><label for="q26D">D</label></div>
+            <div class="radio-option"><input type="radio" name="q26" value="E" id="q26E"><label for="q26E">E</label></div>
+          </div>
+          <div class="error-msg" id="err-q26">回答を選択してください。</div>
+        </div>
+        <div class="question-block">
+          <div class="q-number">問題 27</div>
+          <div class="q-title">次の選択肢から正しいものを選んでください。</div>
+          <div class="radio-group">
+            <div class="radio-option"><input type="radio" name="q27" value="A" id="q27A"><label for="q27A">A</label></div>
+            <div class="radio-option"><input type="radio" name="q27" value="B" id="q27B"><label for="q27B">B</label></div>
+            <div class="radio-option"><input type="radio" name="q27" value="C" id="q27C"><label for="q27C">C</label></div>
+            <div class="radio-option"><input type="radio" name="q27" value="D" id="q27D"><label for="q27D">D</label></div>
+            <div class="radio-option"><input type="radio" name="q27" value="E" id="q27E"><label for="q27E">E</label></div>
+          </div>
+          <div class="error-msg" id="err-q27">回答を選択してください。</div>
+        </div>
+        <div class="question-block">
+          <div class="q-number">問題 28</div>
+          <div class="q-title">次の選択肢から正しいものを選んでください。</div>
+          <div class="radio-group">
+            <div class="radio-option"><input type="radio" name="q28" value="A" id="q28A"><label for="q28A">A</label></div>
+            <div class="radio-option"><input type="radio" name="q28" value="B" id="q28B"><label for="q28B">B</label></div>
+            <div class="radio-option"><input type="radio" name="q28" value="C" id="q28C"><label for="q28C">C</label></div>
+            <div class="radio-option"><input type="radio" name="q28" value="D" id="q28D"><label for="q28D">D</label></div>
+            <div class="radio-option"><input type="radio" name="q28" value="E" id="q28E"><label for="q28E">E</label></div>
+          </div>
+          <div class="error-msg" id="err-q28">回答を選択してください。</div>
+        </div>
+
+        <!-- Q29 numeric -->
+        <div class="question-block">
+          <div class="q-number">問題 29</div>
+          <div class="q-title">計算結果を整数で入力してください。</div>
+          <input type="text" id="q29" placeholder="例：10">
+          <div class="error-msg" id="err-q29">回答を入力してください。</div>
+        </div>
+
+        <!-- Q30 fraction or decimal -->
+        <div class="question-block">
+          <div class="q-number">問題 30</div>
+          <div class="q-title">計算結果を入力してください。（例：23/50）</div>
+          <input type="text" id="q30" placeholder="例：23/50">
+          <div class="error-msg" id="err-q30">回答を入力してください。</div>
+        </div>
+      </div>
+
+      <!-- Buttons -->
+      <div class="flex-gap mt-20">
+        <button class="btn btn-secondary" onclick="resetForm()" style="flex:1">入力リセット</button>
+        <button class="btn btn-primary" onclick="submitForm()" style="flex:2">送信する</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     PAGE: ADMIN LOGIN
+════════════════════════════════════════════════ -->
+<div id="page-admin-login" class="page">
+  <div class="login-wrapper">
+    <div class="login-card">
+      <div class="login-logo">
+        <div class="login-logo-text">管理画面</div>
+      </div>
+      <div class="login-subtitle">採用担当者専用ログイン</div>
+      <div class="form-group">
+        <label for="admin-pass">パスワード</label>
+        <input type="text" id="admin-pass" placeholder="パスワードを入力" onkeydown="if(event.key==='Enter')adminLogin()">
+        <div class="error-msg visible" id="err-login" style="display:none">パスワードが正しくありません。</div>
+      </div>
+      <button class="btn btn-primary mt-12" onclick="adminLogin()">ログイン</button>
+      <div style="margin-top:20px;text-align:center">
+        <a href="#" onclick="showCandidate()" style="font-size:12px;color:var(--text-muted)">受検者画面へ →</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     PAGE: ADMIN DASHBOARD
+════════════════════════════════════════════════ -->
+<div id="page-admin" class="page">
+  <div class="header">
+    <span class="header-logo">管理画面</span>
+    <span class="header-badge">採用担当者</span>
+  </div>
+
+  <div class="container-wide">
+    <div class="admin-bar">
+      <div class="admin-bar-title">受検者一覧</div>
+      <div class="admin-bar-actions">
+        <button class="btn btn-success btn-sm" onclick="exportCSV()">📥 CSV出力</button>
+        <button class="btn btn-secondary btn-sm" onclick="showCandidate()">受検者画面</button>
+        <button class="btn btn-danger btn-sm" onclick="adminLogout()">ログアウト</button>
+      </div>
+    </div>
+
+    <div id="admin-table-wrap">
+      <!-- Rendered by JS -->
+    </div>
+
+    <div class="footnote">
+      ⚠️ 本アプリは簡易版です。本番運用では Firebase、Supabase、PostgreSQL などのデータベースと、正式な管理者認証を使用してください。<br>
+      本結果は独自換算による参考値です。公式SPI3の得点・偏差値・段階を再現するものではありません。採用判断は面接・経験・適性検査結果などと合わせて総合的に実施してください。
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     DETAIL MODAL
+════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="detail-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="modal-name">詳細</div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div id="modal-body"></div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════
+//  CONFIGURATION
+// ═══════════════════════════════════════════════
+const ADMIN_PASSWORD = 'admin123'; // ← パスワードをここで変更
+
+// ═══════════════════════════════════════════════
+//  ANSWER KEY
+// ═══════════════════════════════════════════════
+const ANSWERS = {
+  q1: 'C',
+  'q2-1': 'D', 'q2-2': 'C', 'q2-3': 'A', 'q2-4': 'C', 'q2-5': 'D',
+  'q3-1': 'A', 'q3-2': 'D', 'q3-3': 'C', 'q3-4': 'D', 'q3-5': 'B',
+  'q4-1': 'C', 'q4-2': 'D', 'q4-3': 'B', 'q4-4': 'A', 'q4-5': 'A',
+  'q5-1': 'E', 'q5-2': 'D', 'q5-3': 'B',
+  'q6-1': 'D', 'q6-2': 'C', 'q6-3': 'A',
+  'q7-1': 'A', 'q7-2': 'B', 'q7-3': 'D',
+  q8:  ['B','C','D','A'],
+  q9:  ['C','D','B','A'],
+  q10: ['C','B','D','A'],
+  q11: ['A','D','C','B'],
+  q12: ['B','C','A'],
+  q13: ['B','C','A'],
+  q14: ['C','A','B'],
+  q15: 'A', q16: 'B', q17: 'C',
+  q18: '1.8', q19: '1.5', q20: '118',
+  q21: '4', q22: '4', q23: '15',
+  q24: '5.36', q25: '3820',
+  q26: 'E', q27: 'A', q28: 'C',
+  q29: '10', q30: '23/50'
+};
+
+// ═══════════════════════════════════════════════
+//  ROUTING (hash-based)
+// ═══════════════════════════════════════════════
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+function showCandidate() { showPage('page-candidate'); }
+function showAdminLogin() { showPage('page-admin-login'); }
+function showAdmin() {
+  renderAdminTable();
+  showPage('page-admin');
+}
+
+window.addEventListener('hashchange', routeHash);
+function routeHash() {
+  const h = location.hash;
+  if (h === '#/admin') {
+    if (isAdminLoggedIn()) showAdmin();
+    else showAdminLogin();
+  } else {
+    showCandidate();
+  }
+}
+function isAdminLoggedIn() {
+  return sessionStorage.getItem('admin_auth') === '1';
+}
+
+// Init
+(function() {
+  routeHash();
+  initProgress();
+})();
+
+// ═══════════════════════════════════════════════
+//  PROGRESS BAR
+// ═══════════════════════════════════════════════
+function initProgress() {
+  const allInputs = document.querySelectorAll('#candidate-form input, #candidate-form select');
+  allInputs.forEach(el => el.addEventListener('change', updateProgress));
+}
+function updateProgress() {
+  const radios = ['q1','q15','q16','q17','q26','q27','q28'];
+  const selects = [
+    'q2-1','q2-2','q2-3','q2-4','q2-5',
+    'q3-1','q3-2','q3-3','q3-4','q3-5',
+    'q4-1','q4-2','q4-3','q4-4','q4-5',
+    'q5-1','q5-2','q5-3',
+    'q6-1','q6-2','q6-3',
+    'q7-1','q7-2','q7-3',
+    'q8-a','q8-b','q8-c','q8-d',
+    'q9-a','q9-b','q9-c','q9-d',
+    'q10-a','q10-b','q10-c','q10-d',
+    'q11-a','q11-b','q11-c','q11-d',
+    'q12-a','q12-b','q12-c',
+    'q13-a','q13-b','q13-c',
+    'q14-a','q14-b','q14-c'
+  ];
+  const texts = ['q18','q19','q20','q21','q22','q23','q24','q25','q29','q30'];
+  let answered = 0;
+  let total = radios.length + selects.length + texts.length + 2; // +2 for name/id
+
+  radios.forEach(n => { if(document.querySelector(`input[name="${n}"]:checked`)) answered++; });
+  selects.forEach(id => { if(document.getElementById(id)?.value) answered++; });
+  texts.forEach(id => { if(document.getElementById(id)?.value.trim()) answered++; });
+  if(document.getElementById('name')?.value.trim()) answered++;
+  if(document.getElementById('applicant-id')?.value.trim()) answered++;
+
+  const pct = Math.round(answered / total * 100);
+  document.getElementById('progress-fill').style.width = pct + '%';
+}
+
+// ═══════════════════════════════════════════════
+//  COLLECT ANSWERS
+// ═══════════════════════════════════════════════
+function collectAnswers() {
+  const get = id => document.getElementById(id)?.value.trim() || '';
+  const radio = name => (document.querySelector(`input[name="${name}"]:checked`) || {}).value || '';
+
+  return {
+    q1: radio('q1'),
+    'q2-1': get('q2-1'), 'q2-2': get('q2-2'), 'q2-3': get('q2-3'), 'q2-4': get('q2-4'), 'q2-5': get('q2-5'),
+    'q3-1': get('q3-1'), 'q3-2': get('q3-2'), 'q3-3': get('q3-3'), 'q3-4': get('q3-4'), 'q3-5': get('q3-5'),
+    'q4-1': get('q4-1'), 'q4-2': get('q4-2'), 'q4-3': get('q4-3'), 'q4-4': get('q4-4'), 'q4-5': get('q4-5'),
+    'q5-1': get('q5-1'), 'q5-2': get('q5-2'), 'q5-3': get('q5-3'),
+    'q6-1': get('q6-1'), 'q6-2': get('q6-2'), 'q6-3': get('q6-3'),
+    'q7-1': get('q7-1'), 'q7-2': get('q7-2'), 'q7-3': get('q7-3'),
+    q8: [get('q8-a'), get('q8-b'), get('q8-c'), get('q8-d')],
+    q9: [get('q9-a'), get('q9-b'), get('q9-c'), get('q9-d')],
+    q10: [get('q10-a'), get('q10-b'), get('q10-c'), get('q10-d')],
+    q11: [get('q11-a'), get('q11-b'), get('q11-c'), get('q11-d')],
+    q12: [get('q12-a'), get('q12-b'), get('q12-c')],
+    q13: [get('q13-a'), get('q13-b'), get('q13-c')],
+    q14: [get('q14-a'), get('q14-b'), get('q14-c')],
+    q15: radio('q15'), q16: radio('q16'), q17: radio('q17'),
+    q18: get('q18'), q19: get('q19'), q20: get('q20'),
+    q21: get('q21'), q22: get('q22'), q23: get('q23'),
+    q24: get('q24'), q25: get('q25'),
+    q26: radio('q26'), q27: radio('q27'), q28: radio('q28'),
+    q29: get('q29'), q30: get('q30')
+  };
+}
+
+// ═══════════════════════════════════════════════
+//  VALIDATE
+// ═══════════════════════════════════════════════
+function validateForm(ans) {
+  let ok = true;
+  const show = (id, visible) => {
+    const el = document.getElementById(id);
+    if(el) el.style.display = visible ? 'block' : 'none';
+  };
+
+  const name = document.getElementById('name').value.trim();
+  const aid  = document.getElementById('applicant-id').value.trim();
+  show('err-name', !name); if(!name) ok=false;
+  show('err-id',   !aid);  if(!aid)  ok=false;
+
+  const chk1 = k => { const v = ans[k]; const bad = !v; show(`err-${k.replace('-','')}`, bad); if(bad) ok=false; };
+
+  if(!ans.q1) { show('err-q1', true); ok=false; } else show('err-q1', false);
+
+  const q2bad = ['q2-1','q2-2','q2-3','q2-4','q2-5'].some(k=>!ans[k]);
+  show('err-q2', q2bad); if(q2bad) ok=false;
+  const q3bad = ['q3-1','q3-2','q3-3','q3-4','q3-5'].some(k=>!ans[k]);
+  show('err-q3', q3bad); if(q3bad) ok=false;
+  const q4bad = ['q4-1','q4-2','q4-3','q4-4','q4-5'].some(k=>!ans[k]);
+  show('err-q4', q4bad); if(q4bad) ok=false;
+  const q5bad = ['q5-1','q5-2','q5-3'].some(k=>!ans[k]);
+  show('err-q5', q5bad); if(q5bad) ok=false;
+  const q6bad = ['q6-1','q6-2','q6-3'].some(k=>!ans[k]);
+  show('err-q6', q6bad); if(q6bad) ok=false;
+  const q7bad = ['q7-1','q7-2','q7-3'].some(k=>!ans[k]);
+  show('err-q7', q7bad); if(q7bad) ok=false;
+
+  ['q8','q9','q10','q11'].forEach(q => {
+    const bad = ans[q].some(v=>!v);
+    show(`err-${q}`, bad); if(bad) ok=false;
+  });
+  ['q12','q13','q14'].forEach(q => {
+    const bad = ans[q].some(v=>!v);
+    show(`err-${q}`, bad); if(bad) ok=false;
+  });
+
+  ['q15','q16','q17'].forEach(q => {
+    if(!ans[q]) { show(`err-${q}`, true); ok=false; } else show(`err-${q}`, false);
+  });
+  ['q18','q19','q20','q21','q22','q23','q24','q25','q29','q30'].forEach(q => {
+    if(!ans[q]) { show(`err-${q}`, true); ok=false; } else show(`err-${q}`, false);
+  });
+  ['q26','q27','q28'].forEach(q => {
+    if(!ans[q]) { show(`err-${q}`, true); ok=false; } else show(`err-${q}`, false);
+  });
+
+  return ok;
+}
+
+// ═══════════════════════════════════════════════
+//  SCORE
+// ═══════════════════════════════════════════════
+function normalize(s) { return s.trim().toUpperCase(); }
+
+function scoreVerbal(ans) {
+  let pts = 0;
+  // Q1 (1pt)
+  if(normalize(ans.q1) === normalize(ANSWERS.q1)) pts += 1;
+  // Q2-4 (5pt each)
+  ['q2','q3','q4'].forEach(q => {
+    for(let i=1;i<=5;i++) {
+      const k = `${q}-${i}`;
+      if(normalize(ans[k]) === normalize(ANSWERS[k])) pts++;
+    }
+  });
+  // Q5-7 (3pt each)
+  ['q5','q6','q7'].forEach(q => {
+    for(let i=1;i<=3;i++) {
+      const k = `${q}-${i}`;
+      if(normalize(ans[k]) === normalize(ANSWERS[k])) pts++;
+    }
+  });
+  // Q8-14 sort (1pt each, full match only)
+  ['q8','q9','q10','q11','q12','q13','q14'].forEach(q => {
+    const userArr = ans[q].map(v=>normalize(v));
+    const corrArr = ANSWERS[q].map(v=>normalize(v));
+    if(JSON.stringify(userArr) === JSON.stringify(corrArr)) pts++;
+  });
+  // Q15-17 (1pt each)
+  ['q15','q16','q17'].forEach(q => {
+    if(normalize(ans[q]) === normalize(ANSWERS[q])) pts++;
+  });
+  return pts;
+}
+
+function scoreNumerical(ans) {
+  let pts = 0;
+  ['q18','q19','q20','q21','q22','q23','q24','q25','q26','q27','q28','q29','q30'].forEach(q => {
+    if(normalize(ans[q]) === normalize(ANSWERS[q])) pts++;
+  });
+  return pts;
+}
+
+function calcDeviation(rate) {
+  return Math.round(30 + rate * 40);
+}
+
+function getStage(dev) {
+  if(dev >= 65) return 5;
+  if(dev >= 58) return 4;
+  if(dev >= 50) return 3;
+  if(dev >= 42) return 2;
+  return 1;
+}
+
+function getComment(dev) {
+  if(dev >= 65) return '非常に高い基礎能力が期待できる。文章理解・数的処理ともに優秀であり、学習速度や業務理解の早さが見込まれる。';
+  if(dev >= 58) return '標準以上の基礎能力がある。通常業務の理解・処理には大きな問題は少ない。';
+  if(dev >= 50) return '標準的な基礎能力。複雑な課題や初見の問題では確認・フォローがあるとよい。';
+  if(dev >= 42) return 'やや慎重な確認が必要。文章理解や数的処理のどちらかに課題が出る可能性がある。';
+  return '基礎能力面は慎重判断。業務理解・数的処理・論理的判断について面接や追加課題で確認する。';
+}
+
+// ═══════════════════════════════════════════════
+//  SUBMIT
+// ═══════════════════════════════════════════════
+function submitForm() {
+  const ans = collectAnswers();
+  if(!validateForm(ans)) {
+    document.querySelector('.error-msg.visible')?.scrollIntoView({behavior:'smooth',block:'center'});
+    // scroll to first visible error
+    const errs = document.querySelectorAll('.error-msg');
+    for(const e of errs) {
+      if(e.style.display === 'block') {
+        e.scrollIntoView({behavior:'smooth', block:'center'});
+        break;
+      }
+    }
+    return;
+  }
+
+  const name = document.getElementById('name').value.trim();
+  const appId = document.getElementById('applicant-id').value.trim();
+
+  // Score
+  const vPts  = scoreVerbal(ans);
+  const nPts  = scoreNumerical(ans);
+  const vRate = vPts / 35;
+  const nRate = nPts / 13;
+  const vDev  = calcDeviation(vRate);
+  const nDev  = calcDeviation(nRate);
+  const tDev  = Math.round((vDev + nDev) / 2);
+  const vStage = getStage(vDev);
+  const nStage = getStage(nDev);
+  const tStage = getStage(tDev);
+  const comment = getComment(tDev);
+
+  const record = {
+    id: Date.now(),
+    name, appId,
+    datetime: new Date().toLocaleString('ja-JP'),
+    answers: ans,
+    // verbal
+    vCorrect: vPts, vMax: 35,
+    vRate: (vRate * 100).toFixed(1) + '%',
+    vDev, vStage,
+    // numerical
+    nCorrect: nPts, nMax: 13,
+    nRate: (nRate * 100).toFixed(1) + '%',
+    nDev, nStage,
+    // total
+    tDev, tStage, comment
+  };
+
+  // Save
+  const stored = JSON.parse(localStorage.getItem('aptitude_results') || '[]');
+  stored.push(record);
+  localStorage.setItem('aptitude_results', JSON.stringify(stored));
+
+  // Show success
+  document.getElementById('candidate-form').style.display = 'none';
+  document.getElementById('candidate-success').style.display = 'block';
+  window.scrollTo(0,0);
+}
+
+// ═══════════════════════════════════════════════
+//  RESET
+// ═══════════════════════════════════════════════
+function resetForm() {
+  if(!confirm('入力内容をリセットしてよろしいですか？')) return;
+  document.querySelectorAll('#candidate-form input[type="text"], #candidate-form input[type="number"]').forEach(el => el.value='');
+  document.querySelectorAll('#candidate-form input[type="radio"]').forEach(el => el.checked=false);
+  document.querySelectorAll('#candidate-form select').forEach(el => el.selectedIndex=0);
+  document.querySelectorAll('.error-msg').forEach(el => el.style.display='none');
+  document.getElementById('progress-fill').style.width='0%';
+  window.scrollTo(0,0);
+}
+
+// ═══════════════════════════════════════════════
+//  ADMIN AUTH
+// ═══════════════════════════════════════════════
+function adminLogin() {
+  const pw = document.getElementById('admin-pass').value;
+  const errEl = document.getElementById('err-login');
+  if(pw === ADMIN_PASSWORD) {
+    sessionStorage.setItem('admin_auth','1');
+    errEl.style.display = 'none';
+    document.getElementById('admin-pass').value = '';
+    showAdmin();
+    location.hash = '#/admin';
+  } else {
+    errEl.style.display = 'block';
+  }
+}
+function adminLogout() {
+  sessionStorage.removeItem('admin_auth');
+  location.hash = '';
+  showAdminLogin();
+}
+
+// Admin link: navigate to #/admin
+document.querySelectorAll('a[href="#/admin"]').forEach(el => {
+  el.addEventListener('click', e => { e.preventDefault(); location.hash='#/admin'; routeHash(); });
+});
+
+// ═══════════════════════════════════════════════
+//  ADMIN TABLE
+// ═══════════════════════════════════════════════
+function renderAdminTable() {
+  const results = JSON.parse(localStorage.getItem('aptitude_results') || '[]');
+  const wrap = document.getElementById('admin-table-wrap');
+
+  if(results.length === 0) {
+    wrap.innerHTML = `<div class="empty-state"><div class="empty-state-icon">📋</div><div class="empty-state-text">まだ受検者のデータがありません。</div></div>`;
+    return;
+  }
+
+  const rows = results.map((r,i) => `
+    <tr>
+      <td><strong>${esc(r.name)}</strong></td>
+      <td class="text-muted">${esc(r.appId)}</td>
+      <td class="text-muted" style="white-space:nowrap;font-size:12px">${esc(r.datetime)}</td>
+      <td>
+        <div class="score-big" style="color:#7C3AED">${r.vDev}</div>
+        <div class="score-label">言語</div>
+      </td>
+      <td>
+        <div class="score-big" style="color:#0891B2">${r.nDev}</div>
+        <div class="score-label">非言語</div>
+      </td>
+      <td>
+        <div class="score-big">${r.tDev}</div>
+        <div class="score-label">総合</div>
+      </td>
+      <td><span class="stage-badge stage-${r.tStage}">${r.tStage}</span></td>
+      <td style="font-size:12px;max-width:200px;color:var(--text-muted)">${shortComment(r.comment)}</td>
+      <td>
+        <div class="flex-gap">
+          <button class="btn btn-secondary btn-sm" onclick="showDetail(${i})">詳細</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteRecord(${i})">削除</button>
+        </div>
+      </td>
+    </tr>
+  `).join('');
+
+  wrap.innerHTML = `
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>受検者名</th>
+            <th>応募者ID/メール</th>
+            <th>受検日時</th>
+            <th>言語</th>
+            <th>非言語</th>
+            <th>総合</th>
+            <th>段階</th>
+            <th>判定</th>
+            <th>操作</th>
+          </tr>
+        </thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>
+  `;
+}
+function shortComment(c) {
+  return c.length > 30 ? c.slice(0,30) + '…' : c;
+}
+function esc(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ═══════════════════════════════════════════════
+//  DETAIL MODAL
+// ═══════════════════════════════════════════════
+function showDetail(idx) {
+  const results = JSON.parse(localStorage.getItem('aptitude_results') || '[]');
+  const r = results[idx];
+  if(!r) return;
+
+  document.getElementById('modal-name').textContent = r.name + ' の詳細';
+
+  const body = `
+    <div class="result-cards">
+      <div class="result-card verbal">
+        <div class="result-card-title">言語能力</div>
+        <div class="result-card-score">${r.vDev}</div>
+        <div class="score-label">段階 ${r.vStage}</div>
+      </div>
+      <div class="result-card numerical">
+        <div class="result-card-title">非言語能力</div>
+        <div class="result-card-score">${r.nDev}</div>
+        <div class="score-label">段階 ${r.nStage}</div>
+      </div>
+      <div class="result-card">
+        <div class="result-card-title">総合</div>
+        <div class="result-card-score">${r.tDev}</div>
+        <div class="score-label">段階 ${r.tStage}</div>
+      </div>
+    </div>
+
+    <div class="detail-row"><span class="detail-key">受検者名</span><span class="detail-val">${esc(r.name)}</span></div>
+    <div class="detail-row"><span class="detail-key">応募者ID/メール</span><span class="detail-val">${esc(r.appId)}</span></div>
+    <div class="detail-row"><span class="detail-key">受検日時</span><span class="detail-val">${esc(r.datetime)}</span></div>
+
+    <div style="margin:16px 0 8px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.6px;color:var(--text-muted)">言語能力</div>
+    <div class="detail-row"><span class="detail-key">正答数 / 満点</span><span class="detail-val">${r.vCorrect} / ${r.vMax}</span></div>
+    <div class="detail-row"><span class="detail-key">正答率</span><span class="detail-val">${r.vRate}</span></div>
+    <div class="detail-row"><span class="detail-key">段階</span><span class="detail-val">${r.vStage}</span></div>
+
+    <div style="margin:16px 0 8px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.6px;color:var(--text-muted)">非言語能力</div>
+    <div class="detail-row"><span class="detail-key">正答数 / 満点</span><span class="detail-val">${r.nCorrect} / ${r.nMax}</span></div>
+    <div class="detail-row"><span class="detail-key">正答率</span><span class="detail-val">${r.nRate}</span></div>
+    <div class="detail-row"><span class="detail-key">段階</span><span class="detail-val">${r.nStage}</span></div>
+
+    <div style="margin:16px 0 8px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.6px;color:var(--text-muted)">判定コメント</div>
+    <div style="font-size:13px;line-height:1.7;padding:12px;background:var(--surface2);border-radius:8px;border:1px solid var(--border)">${esc(r.comment)}</div>
+
+    <div style="margin:16px 0 8px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.6px;color:var(--text-muted)">全回答</div>
+    ${renderAnswerGrid(r.answers)}
+  `;
+
+  document.getElementById('modal-body').innerHTML = body;
+  document.getElementById('detail-modal').classList.add('open');
+}
+function closeModal() {
+  document.getElementById('detail-modal').classList.remove('open');
+}
+document.getElementById('detail-modal').addEventListener('click', function(e) {
+  if(e.target === this) closeModal();
+});
+
+function renderAnswerGrid(ans) {
+  const rows = [];
+  const fmt = v => Array.isArray(v) ? v.join(', ') : (v || '—');
+  const keys = Object.keys(ans);
+  keys.forEach(k => {
+    rows.push(`<div class="detail-row"><span class="detail-key">${k}</span><span class="detail-val">${esc(fmt(ans[k]))}</span></div>`);
+  });
+  return `<div style="max-height:200px;overflow-y:auto;padding:4px 0">${rows.join('')}</div>`;
+}
+
+// ═══════════════════════════════════════════════
+//  DELETE
+// ═══════════════════════════════════════════════
+function deleteRecord(idx) {
+  const results = JSON.parse(localStorage.getItem('aptitude_results') || '[]');
+  if(!confirm(`${results[idx]?.name} のデータを削除しますか？`)) return;
+  results.splice(idx, 1);
+  localStorage.setItem('aptitude_results', JSON.stringify(results));
+  renderAdminTable();
+}
+
+// ═══════════════════════════════════════════════
+//  CSV EXPORT
+// ═══════════════════════════════════════════════
+function exportCSV() {
+  const results = JSON.parse(localStorage.getItem('aptitude_results') || '[]');
+  if(results.length === 0) { alert('出力するデータがありません。'); return; }
+
+  const headers = [
+    '受検者名','応募者ID/メール','受検日時',
+    '言語正答数','言語正答率','言語能力偏差値','言語段階',
+    '非言語正答数','非言語正答率','非言語能力偏差値','非言語段階',
+    '基礎能力総合偏差値','総合段階','判定コメント'
+  ];
+
+  const csvRows = [headers.join(',')];
+  results.forEach(r => {
+    const row = [
+      `"${r.name}"`, `"${r.appId}"`, `"${r.datetime}"`,
+      r.vCorrect, `"${r.vRate}"`, r.vDev, r.vStage,
+      r.nCorrect, `"${r.nRate}"`, r.nDev, r.nStage,
+      r.tDev, r.tStage, `"${r.comment}"`
+    ];
+    csvRows.push(row.join(','));
+  });
+
+  const bom = '\uFEFF';
+  const blob = new Blob([bom + csvRows.join('\n')], {type:'text/csv;charset=utf-8'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `aptitude_results_${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+// ═══════════════════════════════════════════════
+//  ADMIN NAV LINK
+// ═══════════════════════════════════════════════
+// Allow reaching admin via URL hash
+window.addEventListener('load', () => {
+  if(location.hash === '#/admin') routeHash();
+});
+</script>
+
+<!-- Admin nav hint (bottom of candidate page) -->
+<div style="text-align:center;padding:20px;font-size:12px;color:#ccc">
+  採用担当者の方は <a href="#/admin" onclick="location.hash='#/admin';routeHash();return false;" style="color:#94A3B8">管理画面</a> へ
+</div>
+
+</body>
+</html>
